@@ -1,0 +1,26 @@
+{
+  "name": "node-linkedin-scraper-example",
+  "version": "1.0.0",
+  "description": "Example of node-linkedin-scraper NPM Package",
+  "engines": {
+    "node": "4.5.0"
+  },
+  "main": "example.js",
+  "scripts": {
+    "start": "node example.js"
+  },
+  "dependencies": {
+    "express": "4.14.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SaiWebApps/node-linkedin-scraper"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "linkedin",
+    "scraper"
+  ],
+  "license": "MIT"
+}

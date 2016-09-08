@@ -1,0 +1,27 @@
+{
+  "name": "node-linkedin-scraper",
+  "version": "1.0.0",
+  "description": "NodeJS Implementation of a LinkedIn Profile Scraper",
+  "engines": {
+    "node": "4.5.0"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "phantomjs-prebuilt": "2.1.12",
+    "casperjs": "1.1.3",
+    "jsonfile": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SaiWebApps/node-linkedin-scraper"
+  },
+  "keywords": [
+    "node",
+    "linkedin",
+    "scraper",
+    "node-horseman",
+    "headless",
+    "phantomjs"
+  ],
+  "license": "MIT"
+}
