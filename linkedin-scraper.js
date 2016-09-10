@@ -18,6 +18,7 @@ module.exports = function(credentialsFilePath, callback, callbackArgs) {
 			require('./tasks/get-projects'),
 			require('./tasks/get-certifications'),
 			require('./tasks/get-skills'),
+			require('./tasks/wait-for-all-recommendations'),
 			require('./tasks/get-recommendations')
 		],
 

@@ -1,25 +1,27 @@
 module.exports = function(profileInfo, browser, asyncCallback) {
 	browser
 		.evaluate(function() {
-			var viewMoreButton = document.querySelector('#endorsements')
-				.querySelectorAll('*[class*="view-more"]');
-			if (viewMoreButton) {
-				viewMoreButton.click();
-				viewMoreButton.click();
-				viewMoreButton.click();
-			}
-
 			var recInfo = [];
 
+			// The recommendations section divides recommendations up by
+			// (position, company) from your work experience.
+			// Iterate through the recommendations within each of these
+			// sections.
 			document.querySelectorAll('div.endorsements-received > ol > li')
 				.forEach(function(node) {
-					var position = 
-						node.querySelector('li > hgroup > h3').innerText;
-					var company = 
-						node.querySelector('li > hgroup > h4').innerText;
+					// Your position/work-experience that brought you in
+					// touch with the recommender.
+					var position =
+						node.querySelector('li > h3').innerText;
+					// The company that position was in.
+					var company =
+						node.querySelector('li > h4').innerText;
 
+					// For a particular (position, company), get 
+					// all recommendations.
 					node.querySelectorAll('.endorsement-full')
 						.forEach(function(eNode) {
+							// Utility function
 							var getText = function(selector) {
 								var target = eNode.querySelector(selector);
 								if (!target) {
@@ -27,14 +29,27 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 								}
 								return target.innerText;
 							};
+							var getHRef = function(selector) {
+								var target = eNode.querySelector(selector);
+								if (!target) {
+									return null;
+								}
+								return target.href;
+							}
 
+							// Create a JSON object with info about the
+							// recommender, recommendation itself, and
+							// the (position, company) that it was for.
 							recInfo.push({
 								yourPosition: position,
 								yourCompany: company,
 								recommenderName: 
-									getText('div > div.endorsement-info > h6'),
+									getText('div > div.endorsement-info > h5'),
 								recommenderPosition: 
 									getText('div > div.endorsement-info > h6'),
+								recommenderProfileUrl:
+									getHRef('div > div.endorsement-info > h5' +
+										' > span > strong > a'),
 								recommendation:
 									getText('div > div.endorsement-info > p'),
 								moreAboutRecommender:
