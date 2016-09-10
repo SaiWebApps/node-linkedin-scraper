@@ -35,7 +35,7 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 					company: getText('div > header > h5.field > span'),
 					timePeriod: getText('div > div > span > time'),
 					location: getText('div > div > span > span > span'),
-					description: getText('div > p'),
+					description: getText('div > p > span'),
 					imgUrl: getImgSrc('div > header > h5.section-logo >' +
 						' span > strong > img')
 				};

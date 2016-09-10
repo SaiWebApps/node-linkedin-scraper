@@ -44,7 +44,8 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 								yourPosition: position,
 								yourCompany: company,
 								recommenderName: 
-									getText('div > div.endorsement-info > h5'),
+									getText('div > div.endorsement-info > h5' +
+										' > span > strong > a'),
 								recommenderPosition: 
 									getText('div > div.endorsement-info > h6'),
 								recommenderProfileUrl:
