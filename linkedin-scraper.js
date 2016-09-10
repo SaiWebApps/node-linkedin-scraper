@@ -12,7 +12,9 @@ module.exports = function(credentialsFilePath, callback, callbackArgs) {
 			require('./tasks/go-to-profile-page'),
 			require('./tasks/get-basic-profile-details'),
 			require('./tasks/get-languages'),
-			require('./tasks/get-education')
+			require('./tasks/get-education'),
+			require('./tasks/get-courses'),
+			require('./tasks/get-experience')
 		],
 
 		function(err, browserRef, profileInfo) {
