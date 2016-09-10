@@ -59,6 +59,6 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 			profileInfo.experience = experienceInfo;
 			asyncCallback(null, browser, profileInfo);
 		}, function() {
-			asyncCallback(new Error('Unable to access education section.'));
+			asyncCallback(new Error('Unable to access work experience section.'));
 		});
 };
