@@ -54,4 +54,4 @@ module.exports = function(browser, asyncCallback) {
 				asyncCallback(new Error(errorMessage));
 			}
 		);
-}
+};

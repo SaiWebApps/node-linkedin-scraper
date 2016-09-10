@@ -76,4 +76,4 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 		}, function() {
 			asyncCallback(new Error('Unable to access education section.'));
 		});
-}
+};

@@ -37,4 +37,4 @@ module.exports = function(credentials, browser, asyncCallback) {
 				asyncCallback(new Error('Invalid LinkedIn credentials.'));
 			}
 		);
-}
+};

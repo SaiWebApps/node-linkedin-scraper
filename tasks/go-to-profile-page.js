@@ -20,4 +20,4 @@ module.exports = function(browser, asyncCallback) {
 		}, function() {
 			asyncCallback(new Error('Unable to navigate to profile page.'));
 		});
-}
+};
