@@ -6,7 +6,8 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 			// Add each education node's information as a JSON
 			// object to output.
 			var educationNodes = document.querySelectorAll(
-				'#background-education > div.li-ig-educations');
+				'#background-education > div.entity-container > div.entity ' +
+				' > div.edit-action-area');
 
 			educationNodes.forEach(function(educationNode) {
 				// Utility functions
@@ -30,32 +31,32 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 
 				// Extract basic details about this education entry.
 				var educationInfo = {
-					title: getText('div > div > header > h4 > div > span'),
-					degree: getText('div > div > header > h5 > span >' +
+					title: getText('div > header > h4 > div > span'),
+					degree: getText('div > header > h5 > span >' +
 						' span.degree'),
-					major: getText('div > div > header > h5 > span >' +
+					major: getText('div > header > h5 > span >' +
 						' span.major'),
-					grade: getText('div > div > header > h5 > span >' +
+					grade: getText('div > header > h5 > span >' +
 						' span:nth-child(3)'),
-					startTime: getText('div > div > div.date-header-field.' +
+					startTime: getText('div > div.date-header-field.' +
 						'field > span > time:nth-child(1)'),
-					endTime: getText('div > div > div.date-header-field.' +
+					endTime: getText('div > div.date-header-field.' +
 						'field > span > time:nth-child(2)'),
-					description: getText('div > div > p > span'),
+					description: getText('div > p > span'),
 					imgUrl: getImgSrc('div > div > h5 > span > strong > img')
 				};
 
 				// Extract related projects and courses info for this 
 				// education entry.
 				educationInfo.associatedProjects = [];				
-				getAll('div > div > dl > dd:nth-child(2) > ul > li > h6')
+				getAll('div > dl > dd:nth-child(2) > ul > li > h6')
 					.forEach(function(projectNode) {
 						educationInfo.associatedProjects.push(
 							projectNode.innerHTML);
 					});
 
 				educationInfo.associatedCourses = [];
-				getAll('div > div > dl > dd:nth-child(4) > ul > li > h6')
+				getAll('div > dl > dd:nth-child(4) > ul > li > h6')
 					.forEach(function(courseNode) {
 						educationInfo.associatedCourses.push(
 							courseNode.innerHTML);

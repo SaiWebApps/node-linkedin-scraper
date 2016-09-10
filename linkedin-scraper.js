@@ -14,7 +14,8 @@ module.exports = function(credentialsFilePath, callback, callbackArgs) {
 			require('./tasks/get-languages'),
 			require('./tasks/get-education'),
 			require('./tasks/get-courses'),
-			require('./tasks/get-experience')
+			require('./tasks/get-experience'),
+			require('./tasks/get-projects')
 		],
 
 		function(err, browserRef, profileInfo) {
