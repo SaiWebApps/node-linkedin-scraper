@@ -46,7 +46,7 @@ module.exports = function(browser, asyncCallback) {
 		})
 		.then(
 			function(profileInfo) {
-				asyncCallback(null, browser, profileInfo);
+				asyncCallback(null, profileInfo, browser);
 			},
 
 			function() {

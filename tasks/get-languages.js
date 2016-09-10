@@ -1,4 +1,4 @@
-module.exports = function(browser, profileInfo, asyncCallback) {
+module.exports = function(profileInfo, browser, asyncCallback) {
 	browser
 		.evaluate(function() {
 			const PREFIX = ['#languages-view > ol > li > div.entity >',
@@ -21,8 +21,10 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 		})
 		.then(function(languageInfo) {
 			profileInfo.languages = languageInfo;
-			asyncCallback(null, browser, profileInfo);
+			asyncCallback(null, profileInfo, browser);
 		}, function() {
-			asyncCallback(new Error('Unable to access languages section.'));
+			profileInfo.languages = [];
+			var error = new Error('Unable to access languages section.');
+			asyncCallback(error, profileInfo);
 		});
 };

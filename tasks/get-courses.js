@@ -1,4 +1,4 @@
-module.exports = function(browser, profileInfo, asyncCallback) {
+module.exports = function(profileInfo, browser, asyncCallback) {
 	browser
 		.evaluate(function() {
 			var courses = [];
@@ -13,8 +13,10 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 		})
 		.then(function(courseInfo) {
 			profileInfo.courses = courseInfo;
-			asyncCallback(null, browser, profileInfo);
+			asyncCallback(null, profileInfo, browser);
 		}, function(err) {
-			asyncCallback(new Error('Unable to access courses section.'));
+			profileInfo.courses = [];
+			var error = new Error('Unable to access courses section.');
+			asyncCallback(error, profileInfo);
 		});
 };

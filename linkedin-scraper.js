@@ -17,17 +17,19 @@ module.exports = function(credentialsFilePath, callback, callbackArgs) {
 			require('./tasks/get-experience'),
 			require('./tasks/get-projects'),
 			require('./tasks/get-certifications'),
-			require('./tasks/get-skills')
+			require('./tasks/get-skills'),
+			require('./tasks/get-recommendations')
 		],
 
-		function(err, browserRef, profileInfo) {
+		function(err, profileInfo, browserRef) {
 			browser
 				.end()
 				.then(function() {
+					if (!profileInfo) {
+						profileInfo = {};
+					}
 					if (err) {
 						console.error(err);
-						callback(null, callbackArgs);
-						return;
 					}
 					callback(profileInfo, callbackArgs);
 				});

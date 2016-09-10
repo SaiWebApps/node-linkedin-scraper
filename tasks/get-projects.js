@@ -1,4 +1,4 @@
-module.exports = function(browser, profileInfo, asyncCallback) {
+module.exports = function(profileInfo, browser, asyncCallback) {
 	browser
 		.evaluate(function() {
 			var output = [];
@@ -58,8 +58,10 @@ module.exports = function(browser, profileInfo, asyncCallback) {
 		})
 		.then(function(projectInfo) {
 			profileInfo.projects = projectInfo;
-			asyncCallback(null, browser, profileInfo);
+			asyncCallback(null, profileInfo, browser);
 		}, function() {
-			asyncCallback(new Error('Unable to access projects section.'));
+			profileInfo.projects = [];
+			var error = new Error('Unable to access projects section.');
+			asyncCallback(error, profileInfo);
 		});
 };
