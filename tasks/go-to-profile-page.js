@@ -14,7 +14,9 @@
  */
 module.exports = function(browser, asyncCallback) {
 	browser
+		.wait(7200)
 		.click('#main-site-nav > ul > li:nth-child(2) > a')
+		.wait(7200)
 		.then(function() { 
 			asyncCallback(null, browser); 
 		}, function() {
