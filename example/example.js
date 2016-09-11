@@ -6,6 +6,9 @@ const CREDENTIALS_CONFIG_FILE = __dirname + '/config.json';
 var app = require('express')();
 var profile = {};
 
+// Request node-linkedin-scraper to extract information
+// about a target LinkedIn profile; once we receive said
+// info, display the JSON object on the web page.
 require('../linkedin-scraper')(
 	CREDENTIALS_CONFIG_FILE, 
 	

@@ -46,12 +46,14 @@ module.exports = function(browser, asyncCallback) {
 		})
 		.then(
 			function(profileInfo) {
+				profileInfo.errors = [];
 				asyncCallback(null, profileInfo, browser);
 			},
 
-			function() {
-				var errorMessage = 'Unable to access basic profile details.';
-				asyncCallback(new Error(errorMessage));
+			function(err) {
+				asyncCallback(null, {
+					errors: ['Unable to access basic profile details.']
+				});
 			}
 		);
 };

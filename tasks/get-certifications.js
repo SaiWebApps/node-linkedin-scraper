@@ -52,7 +52,7 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 			asyncCallback(null, profileInfo, browser);
 		}, function() {
 			profileInfo.certifications = [];
-			var error = new Error('Unable to access certifications section.');
-			asyncCallback(error, profileInfo);
+			profileInfo.errors.push('Unable to access certifications section.');
+			asyncCallback(null, profileInfo);
 		});
 };

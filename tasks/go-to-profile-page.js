@@ -20,6 +20,11 @@ module.exports = function(browser, asyncCallback) {
 		.then(function() { 
 			asyncCallback(null, browser); 
 		}, function() {
-			asyncCallback(new Error('Unable to navigate to profile page.'));
+			browser
+				.end()
+				.then(function() {
+					var errMsg = 'Unable to navigate to profile page.';
+					asyncCallback(new Error(errMsg));
+				});
 		});
 };

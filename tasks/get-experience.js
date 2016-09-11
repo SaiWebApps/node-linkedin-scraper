@@ -60,7 +60,7 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 			asyncCallback(null, profileInfo, browser);
 		}, function() {
 			profileInfo.experience = [];
-			var error = new Error('Unable to access work experience section.');
-			asyncCallback(error, profileInfo);
+			profileInfo.errors.push('Unable to access work experience section.');
+			asyncCallback(null, profileInfo);
 		});
 };

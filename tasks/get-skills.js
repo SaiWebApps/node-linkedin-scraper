@@ -39,7 +39,7 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 			asyncCallback(null, profileInfo, browser);
 		}, function() {
 			profileInfo.skills = [];
-			var error = new Error('Unable to access skill section.');
-			asyncCallback(error, profileInfo);
+			profileInfo.errors.push('Unable to access skill section.');
+			asyncCallback(null, profileInfo);
 		});
 };

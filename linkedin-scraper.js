@@ -1,15 +1,12 @@
 var async = require('async');
-var Nightmare = require('nightmare');
 
 module.exports = function(credentialsFilePath, callback, callbackArgs) {
-	var browser = new Nightmare();
-
 	async.waterfall(
 		[
-			async.apply(require('./tasks/process-credentials'), 
-				credentialsFilePath, browser),
+			async.apply(require('./tasks/setup'), credentialsFilePath),
 			require('./tasks/login'),
 			require('./tasks/go-to-profile-page'),
+
 			require('./tasks/get-basic-profile-details'),
 			require('./tasks/get-languages'),
 			require('./tasks/get-education'),
@@ -19,21 +16,16 @@ module.exports = function(credentialsFilePath, callback, callbackArgs) {
 			require('./tasks/get-certifications'),
 			require('./tasks/get-skills'),
 			require('./tasks/wait-for-all-recommendations'),
-			require('./tasks/get-recommendations')
+			require('./tasks/get-recommendations'),
+			
+			require('./tasks/finish')
 		],
 
-		function(err, profileInfo, browserRef) {
-			browser
-				.end()
-				.then(function() {
-					if (!profileInfo) {
-						profileInfo = {};
-					}
-					if (err) {
-						console.error(err);
-					}
-					callback(profileInfo, callbackArgs);
-				});
+		function(err, profileInfo) {
+			if (err && !profileInfo) {
+				profileInfo = { errors: [err.message] };
+			}
+			callback(profileInfo, callbackArgs);
 		}
 	);
 };

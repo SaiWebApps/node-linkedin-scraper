@@ -61,7 +61,7 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 			asyncCallback(null, profileInfo, browser);
 		}, function() {
 			profileInfo.projects = [];
-			var error = new Error('Unable to access projects section.');
-			asyncCallback(error, profileInfo);
+			profileInfo.errors.push('Unable to access projects section.');
+			asyncCallback(null, profileInfo);
 		});
 };
