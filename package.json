@@ -19,7 +19,7 @@
     "node",
     "linkedin",
     "scraper",
-    "node-horseman",
+    "nightmare",
     "headless",
     "phantomjs"
   ],
