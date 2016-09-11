@@ -21,7 +21,8 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 					// all recommendations.
 					node.querySelectorAll('.endorsement-full')
 						.forEach(function(eNode) {
-							// Utility function
+							// Utility functions
+							var get = (selector) => eNode.querySelector(selector);
 							var getText = function(selector) {
 								var target = eNode.querySelector(selector);
 								if (!target) {
@@ -37,10 +38,13 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 								return target.href;
 							}
 
+							const REC_TEXT_SELECTOR = 
+								'div > div.endorsement-info > p';
+
 							// Create a JSON object with info about the
 							// recommender, recommendation itself, and
 							// the (position, company) that it was for.
-							recInfo.push({
+							var entry = {
 								yourPosition: position,
 								yourCompany: company,
 								recommenderName: 
@@ -52,10 +56,23 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 									getHRef('div > div.endorsement-info > h5' +
 										' > span > strong > a'),
 								recommendation:
-									getText('div > div.endorsement-info > p'),
+									getText(REC_TEXT_SELECTOR),
 								moreAboutRecommender:
 									getText('div > div.endorsement-info > span')
-							});
+							};
+
+							// Some recommendations have been abbreviated.
+							// Click on the "Show More" button to expand them
+							// to their full description.
+							var showMoreButton = get(REC_TEXT_SELECTOR + 
+								' > a.toggle-show-more');
+							if (showMoreButton) {
+								showMoreButton.click();
+								entry.recommendation = getText(REC_TEXT_SELECTOR);
+							}
+
+							// Add recommendation entry to cumulative list.
+							recInfo.push(entry);
 						});
 				});
 
