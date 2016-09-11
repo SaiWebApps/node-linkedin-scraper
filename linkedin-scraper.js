@@ -1,9 +1,9 @@
 var async = require('async');
 
-module.exports = function(credentialsFilePath, callback, callbackArgs) {
+module.exports = function(credentials, callback, callbackArgs) {
 	async.waterfall(
 		[
-			async.apply(require('./tasks/setup'), credentialsFilePath),
+			async.apply(require('./tasks/setup'), credentials),
 			require('./tasks/login'),
 			require('./tasks/go-to-profile-page'),
 
