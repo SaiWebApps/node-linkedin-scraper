@@ -5,25 +5,28 @@ const CREDENTIALS_CONFIG_FILE = __dirname + '/config.json';
 // Global Variables
 var app = require('express')();
 var profile = {};
+var connections = {};
 
 // Request node-linkedin-scraper to extract information
-// about a target LinkedIn profile; once we receive said
-// info, display the JSON object on the web page.
-require('../linkedin-scraper')(
-	CREDENTIALS_CONFIG_FILE, 
-	
-	function(profileInfo) { 
+// about a target LinkedIn profile.
+var linkedinScraper = require('../index');
+linkedinScraper.getAll(CREDENTIALS_CONFIG_FILE, 
+	function(profileInfo, connectionsInfo) {
 		profile = profileInfo;
-				
-		// Start this server only after we get back information
-		// from the LinkedIn scraper.
+		connections = connectionsInfo;
+		// Start the server only after we've received all our information.
 		app.listen(PORT, function() {
-			console.log('"node-linkedin-scraper-example"',
-				"is running on port", PORT);
+			console.log('node-linkedin-scraper-example is',
+				'running on port', PORT);
 		});
 	}
 );
 
+// URL Routing
 app.get('/', function(request, response) {
 	response.json(profile);
+});
+
+app.get('/get-connections', function(request, response) {
+	response.json(connections);
 });
