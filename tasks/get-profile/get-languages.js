@@ -25,6 +25,6 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 		}, function() {
 			profileInfo.languages = [];
 			profileInfo.errors.push('Unable to access languages section.');
-			asyncCallback(null, profileInfo);
+			asyncCallback(null, profileInfo, browser);
 		});
 };

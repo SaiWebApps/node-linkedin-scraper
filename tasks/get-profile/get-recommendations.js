@@ -84,6 +84,6 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 		}, function(err) {
 			profileInfo.recommendations = [];
 			profileInfo.errors.push('Unable to access recommendations section.');
-			asyncCallback(null, profileInfo);
+			asyncCallback(null, profileInfo, browser);
 		});
 };

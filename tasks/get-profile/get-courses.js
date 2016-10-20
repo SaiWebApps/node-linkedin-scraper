@@ -17,6 +17,6 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 		}, function(err) {
 			profileInfo.courses = [];
 			profileInfo.errors.push('Unable to access courses section.');
-			asyncCallback(null, profileInfo);
+			asyncCallback(null, profileInfo, browser);
 		});
 };
