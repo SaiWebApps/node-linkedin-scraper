@@ -1,19 +1,32 @@
 var async = require('async');
 
+/**
+ * @description
+ * Open PhantomJS browser, login to LinkedIn, execute list of tasks
+ * in waterfall (each task passes on output to next stage; each stage
+ * is executed serially), close browser, and pass accumulated task output
+ * to callback, along with callbackArgs.
+ * 
+ * @param taskList
+ * List of tasks that we want to execute in async-waterfall.
+ * 
+ * @param callback
+ * Callback function that is expecting 2+ arguments: error if waterfall
+ * fails before reaching the end and info (accumulated task output).
+ * 
+ * @param callbackArgs
+ * Other arguments that should be passed onto the callback function.
+ */
 function run(credentials, taskList, callback, callbackArgs) 
 {
-	// First, execute the initialization tasks (e.g., open PhantomJS 
-	// browser, and login to LinkedIn).
-	var tasks = [
-		async.apply(require('./tasks/setup'), credentials),
-		require('./tasks/login')
-	];
-	// Then, execute the user-specified list of tasks.
+	const BROWSER_MGMT_DIR = './tasks/browser-mgmt/'
+	var setupTask = require(BROWSER_MGMT_DIR + 'setup')
+	var loginTask = require(BROWSER_MGMT_DIR + 'login')
+	var finishTask = require(BROWSER_MGMT_DIR + 'finish')
+
+	var tasks = [async.apply(setupTask, credentials), loginTask];
 	tasks = tasks.concat(taskList);
-	// Finally, execute a finalization task to release all resources
-	// (e.g., close the Phantom JS browser that we opened in the 
-	// initialization tasks).
-	tasks.push(require('./tasks/finish'));
+	tasks.push(finishTask);
 
 	async.waterfall(tasks, function(err, info) {
 		if (err && !info) {

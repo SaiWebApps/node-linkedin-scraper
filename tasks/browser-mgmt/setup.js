@@ -1,5 +1,5 @@
 var Nightmare = require('nightmare');
-var processCredentials = require('../utils/linkedin-credentials-processor');
+var processCredentials = require('../../utils/linkedin-credentials-processor');
 
 module.exports = function(credentials, asyncCallback) {
 	var browser;
