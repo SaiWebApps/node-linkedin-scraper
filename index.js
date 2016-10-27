@@ -64,15 +64,7 @@ function getConnectionsTaskList()
 	];
 }
 
-exports.getProfile = function(credentials, callback, callbackArgs) {
-	run(credentials, getProfileTaskList(), callback, callbackArgs);
-};
-
-exports.getConnections = function(credentials, callback, callbackArgs) {
-	run(credentials, getConnectionsTaskList(), callback, callbackArgs);
-};
-
-exports.getAll = function(credentials, callback, callbackArgs) {
+exports.me = function(credentials, callback, callbackArgs) {
 	async.parallel([
 		function(asyncParallelCallback) {
 			run(credentials, getProfileTaskList(), function(profileInfo) {
@@ -99,4 +91,12 @@ exports.getAll = function(credentials, callback, callbackArgs) {
 
 		callback(profile, connections, callbackArgs);
 	});
+};
+
+exports.me.profile = function(credentials, callback, callbackArgs) {
+	run(credentials, getProfileTaskList(), callback, callbackArgs);
+};
+
+exports.me.connections = function(credentials, callback, callbackArgs) {
+	run(credentials, getConnectionsTaskList(), callback, callbackArgs);
 };

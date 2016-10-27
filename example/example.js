@@ -10,7 +10,7 @@ var connections = {};
 // Request node-linkedin-scraper to extract information
 // about a target LinkedIn profile.
 var linkedinScraper = require('../index');
-linkedinScraper.getAll(CREDENTIALS_CONFIG_FILE, 
+linkedinScraper.me(CREDENTIALS_CONFIG_FILE, 
 	function(profileInfo, connectionsInfo) {
 		profile = profileInfo;
 		connections = connectionsInfo;
