@@ -4,15 +4,15 @@ module.exports = function(browser, asyncCallback) {
 	browser
 		.evaluate(function() {
 			var numConnectionsStr = document.querySelector(
-				'#wrapper > div.top-bar > div.header > ' +
-				'div.left-entity > div > h3'
+				['#wrapper > div.top-bar > div.header >',
+				'div.left-entity > div > h3'].join(' ')
 			).innerText;
 			return parseInt(numConnectionsStr.split(' ')[2]);
 		})
 		.then(function(totalNumConnections) {
 			var pageHeight = 0;
 			var currentNumConnections = 0;
-			var check = () => currentNumConnections - totalNumConnections >= -1;
+			var check = () => (currentNumConnections - totalNumConnections >= -1);
 
 			async.until(
 				// While this function returns false
@@ -44,6 +44,7 @@ module.exports = function(browser, asyncCallback) {
 					}
 					browser
 						.scrollTo(pageHeight, 0)
+						.wait(3600)
 						.then(function() { 
 							callback() 
 						});
