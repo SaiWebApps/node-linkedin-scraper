@@ -4,16 +4,20 @@ const CREDENTIALS_CONFIG_FILE = __dirname + '/config.json';
 
 // Global Variables
 var app = require('express')();
-var profile = {};
-var connections = {};
+var myProfile = {};
+var myConnections = {};
 
-// Request node-linkedin-scraper to extract information
-// about a target LinkedIn profile.
+// Configure app.
+app.set('view engine', 'ejs');
+
+// Use node-linkedin-scraper to gather information about your (current
+// user's) LinkedIn account.
 var linkedinScraper = require('../index');
 linkedinScraper.me(CREDENTIALS_CONFIG_FILE, 
 	function(profileInfo, connectionsInfo) {
-		profile = profileInfo;
-		connections = connectionsInfo;
+		myProfile = profileInfo;
+		myConnections = connectionsInfo;
+
 		// Start the server only after we've received all our information.
 		app.listen(PORT, function() {
 			console.log('node-linkedin-scraper-example is',
@@ -23,10 +27,46 @@ linkedinScraper.me(CREDENTIALS_CONFIG_FILE,
 );
 
 // URL Routing
-app.get('/', function(request, response) {
-	response.json(profile);
+app.get('/me', function(request, response) {
+	response.render('index', {
+		'profile': myProfile,
+		'connections': myConnections,
+		'showProfile': true,
+		'showConnections': true,
+		'title': myProfile.fullName + ' @ LinkedIn'
+	});
 });
 
-app.get('/get-connections', function(request, response) {
-	response.json(connections);
+app.get('/me/connections', function(request, response) {
+	response.render('index', {
+		'connections': myConnections,
+		'showProfile': false,
+		'showConnections': true,
+		'title': myProfile.fullName + ' @ LinkedIn - Connections'
+	});
+});
+
+app.get('/profile', function(request, response) {
+	if (!('profileUrl' in request.query)) {
+		response.render('index', {
+			'profile': myProfile,
+			'showProfile': true,
+			'showConnections': false,
+			'title': myProfile.fullName + ' @ LinkedIn - Profile'
+		});
+		return;
+	}
+
+	linkedinScraper.profile(
+		CREDENTIALS_CONFIG_FILE, 
+		request.query.profileUrl,
+		function(profile) {
+			response.render('index', {
+				'profile': profile,
+				'showProfile': true,
+				'showConnections': false,
+				'title': profile.fullName + ' @ LinkedIn - Profile'
+			});
+		}
+	);
 });

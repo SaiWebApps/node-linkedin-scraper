@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title> <%= title %> </title>
+		<meta charset="UTF-8">
+		<meta name="author" content="Sairam Krishnan">
+	</head>
+
+	<body>
+		<% if (showProfile) { %>
+			<h3> Profile </h3>
+			<pre><%= JSON.stringify(profile, null, '\t'); %></pre>
+		<% } %>
+
+		<% if (showConnections) { %>
+			<h3> Connections </h3>
+			<pre><%= JSON.stringify(connections, null, '\t'); %></pre>
+		<% } %>
+	</body>
+</html>

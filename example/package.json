@@ -10,7 +10,8 @@
     "start": "node example.js"
   },
   "dependencies": {
-    "express": "4.14.0"
+    "express": "4.14.0",
+    "ejs": "*"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "keywords": [
     "node",
     "express",
+    "ejs",
     "linkedin",
     "scraper"
   ],
