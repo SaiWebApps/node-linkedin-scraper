@@ -1,41 +1,45 @@
+function errorHandler(err)
+{
+	asyncCallback(null, {
+		error: 'Unable to retrieve LinkedIn connections information.'
+	}, browser);
+}
+
 module.exports = function(browser, asyncCallback) {
 	browser
+		// Retrieve the total number of connections.
 		.evaluate(function() {
-			var connectionsInfo = [];
+			const SELECTOR = ['#wrapper > div.top-bar > div.header',
+				'> div.left-entity'].join(' ');
+			var connectionsHeaderElem = document.querySelector(SELECTOR);
 
-			document.querySelectorAll('ul.contacts-list-view > li')
-				.forEach(function(connectionNode) {
-					// Utility functions
-					var get = function(selector, property) {
-						var target = connectionNode.querySelector(selector);
-						if (!target || !(property in target)) {
-							return null;
-						}
-						return target[property];
-					};
-					var getText = (selector) => get(selector, 'innerHTML');
-					var getHRef = (selector) => get(selector, 'href');
-					var getImgSrc = (selector) => get(selector, 'src');
-
-					// Save this connection node's information to a JSON
-					// object, and add said object to connectionsInfo array.
-					connectionsInfo.push({
-						'name': getText('li > div.body > h3 > a'),
-						'headline': getText('li > div.body > p.headline'),
-						'locality': getText('li > div.body > span.location'),
-						'profileUrl': getHRef('li > div.body > h3 > a'),
-						'imgUrl': getImgSrc('li > a.image > img.user_pic')
-					});
-				});
-
-			return connectionsInfo;
+			if (!connectionsHeaderElem) {
+				return 0;
+			}
+			return connectionsHeaderElem.innerText.split(' ')[2];
 		})
-		.then(function(connectionsInfo) {
-			asyncCallback(null, connectionsInfo, browser);
-		}, function(err) {
-			console.log(err);
-			asyncCallback(null, {
-				error: 'Unable to retrieve LinkedIn connections information.'
-			}, browser);
-		});
+		
+		// Request connections info from LinkedIn Contacts API.
+		.then(function(numConnections) {
+			const URL_PREFIX = ['https://www.linkedin.com/connected/api/v2',
+				'/contacts?start=0&count='].join('');
+			const URL_SUFFIX = ['&fields=id%2Cname%2CfirstName%2ClastName',
+				'%2Ccompany%2Ctitle%2Clocation%2Ctags%2Cemails%2Csources',
+				'%2CdisplaySources%2CconnectionDate%2CsecureProfileImageUrl',
+				'&sort=CREATED_DESC&_=1479676617428'].join('');
+			var url = [URL_PREFIX, numConnections, URL_SUFFIX].join('');
+
+			browser
+				.goto(url)
+				.wait('body > pre')
+				.evaluate(function() {
+					const SELECTOR = 'body > pre';
+					var connJsonStr = document.querySelector(SELECTOR).innerText;
+					var connJson = JSON.parse(connJsonStr);
+					return ('values' in connJson) ? connJson['values'] : {};
+				})
+				.then(function(connectionsInfo) {
+					asyncCallback(null, connectionsInfo, browser);
+				}, errorHandler);
+		}, errorHandler);
 };

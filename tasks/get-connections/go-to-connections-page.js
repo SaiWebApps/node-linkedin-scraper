@@ -1,19 +1,20 @@
 module.exports = function(browser, asyncCallback) {
+	const CONN_TAB_SELECTOR = '#network-sub-nav > li:nth-child(1) > a';
+	const ERROR = new Error('Unable to navigate to connections page.');
+
 	browser
-		// Wait to land on home page after logging in (previous stage).
-		.wait(7200)
 		// Click on "Connections" under the "My Network" nav item.
-		.click('#network-sub-nav > li:nth-child(1) > a')
-		// Wait for "Connections" page to load.
-		.wait(7200)
-		.then(function() { 
-			asyncCallback(null, browser); 
-		}, function() {
+		.wait(CONN_TAB_SELECTOR)
+		.click(CONN_TAB_SELECTOR)
+
+		// Wait for the connections page to load.
+		.wait('#wrapper > div.top-bar > div.header > div.left-entity')
+		
+		// Once the connections page has loaded, move onto the next
+		// stage of the waterfall. Otherwise, error out of waterfall.
+		.then(() => asyncCallback(null, browser), function() {
 			browser
 				.end()
-				.then(function() {
-					var errMsg = 'Unable to navigate to connections page.';
-					asyncCallback(new Error(errMsg));
-				});
-		});	
+				.then(() => asyncCallback(ERROR));
+		});
 };
