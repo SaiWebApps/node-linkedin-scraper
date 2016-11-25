@@ -1,11 +1,12 @@
-function errorHandler(err)
+function getErrorHandler(browser, asyncCallback)
 {
-	asyncCallback(null, {
-		error: 'Unable to retrieve LinkedIn connections information.'
-	}, browser);
+	const ERR_MSG = 'Unable to retrieve LinkedIn connections information.';
+	return (err) => asyncCallback(null, {error: ERR_MSG}, browser);
 }
 
 module.exports = function(browser, asyncCallback) {
+	var errorHandler = getErrorHandler(browser, asyncCallback);
+
 	browser
 		// Retrieve the total number of connections.
 		.evaluate(function() {
