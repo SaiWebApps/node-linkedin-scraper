@@ -26,6 +26,7 @@ module.exports = function(browser, asyncCallback) {
 			};
 
 			return {
+				id: LI.Profile.data['memberId'],
 				fullName: getText('#name > h1 > span > span'),
 				headline: getText('#headline > div.field > p'),
 				locality: getText(

@@ -37,7 +37,6 @@ TaskListManager.prototype.getProfileTaskList = function() {
 		require(DIR + 'get-projects'),
 		require(DIR + 'get-certifications'),
 		require(DIR + 'get-skills'),
-		require(DIR + 'wait-for-all-recommendations'),
 		require(DIR + 'get-recommendations')
 	]);
 };
