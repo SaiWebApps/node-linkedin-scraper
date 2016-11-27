@@ -1,3 +1,6 @@
+const DELAY_MS = 1800;
+const ENTER_KEY = '\u000d';
+
 /**
  * @description
  * Login into LinkedIn using the specified credentials.
@@ -12,19 +15,21 @@
  */
 module.exports = function(credentials, browser, asyncCallback) {
 	browser
-		// Fill in LinkedIn login form.
+		// Go to LinkedIn login page.
 		.goto('https://linkedin.com/uas/login')
+		
+		// Clear email field, and enter email.
 		.insert('input[name="session_key"]', '')
 		.type('input[name="session_key"]', credentials.email)
-		.insert('input[name="session_password"]', '')
-		.type('input[name="session_password"]', credentials.password)
 		
-		// Submit login form.
-		.click('input[type="submit"]')
+		// Clear password field, and enter password. Submit form.
+		.insert('input[name="session_password"]', '')
+		.type('input[name="session_password"]', 
+			credentials.password + ENTER_KEY)
 
 		// Wait for home page to load; if the home page loads successfully,
 		// then we will be able to find the navbar.
-		.wait('#main-site-nav')
+		.wait(DELAY_MS)
 		.then(
 			// If login succeeds, then invoke callback so that we can
 			// move to the next function in the waterfall.
