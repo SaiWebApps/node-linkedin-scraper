@@ -46,6 +46,7 @@ TaskListManager.prototype.getConnectionsTaskList = function() {
 
 	return this.configureTasks([
 		require(DIR + 'go-to-connections-page'),
+		require(DIR + 'get-num-connections'),
 		require(DIR + 'get-connections')
 	]);
 };

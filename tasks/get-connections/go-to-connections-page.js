@@ -7,8 +7,8 @@ module.exports = function(browser, asyncCallback) {
 		.wait(CONN_TAB_SELECTOR)
 		.click(CONN_TAB_SELECTOR)
 
-		// Wait for the connections page to load.
-		.wait('#wrapper > div.top-bar > div.header > div.left-entity')
+		// Wait for "Connections" page to load.
+		.wait(() => document.title.startsWith('Connections'))
 		
 		// Once the connections page has loaded, move onto the next
 		// stage of the waterfall. Otherwise, error out of waterfall.

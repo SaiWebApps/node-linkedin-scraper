@@ -1,46 +1,76 @@
-function getErrorHandler(browser, asyncCallback)
+var async = require('async');
+
+/**
+ * @param start
+ * Contacts index to start at.
+ *
+ * @param end
+ * Contacts index to end at.
+ *
+ * @return
+ * LinkedIn Contacts API URL that will return all contacts between
+ * indices "start" and "end" inclusive.
+ */
+function getUrl(start, end)
 {
-	const ERR_MSG = 'Unable to retrieve LinkedIn connections information.';
-	return (err) => asyncCallback(null, {error: ERR_MSG}, browser);
+	const URL_PREFIX = 'https://www.linkedin.com/connected/api/v2/contacts?';
+	var count = end-start;
+	return [URL_PREFIX, 'start=', start, '&count=', count].join('');
 }
 
-module.exports = function(browser, asyncCallback) {
-	var errorHandler = getErrorHandler(browser, asyncCallback);
+module.exports = function(connectionsInfo, browser, asyncCallback) {
+	const ERR_MSG = 'Unable to retrieve LinkedIn connections information.';
+	const CHUNK_SIZE = 300;
 
-	browser
-		// Retrieve the total number of connections.
-		.evaluate(function() {
-			const SELECTOR = ['#wrapper > div.top-bar > div.header',
-				'> div.left-entity'].join(' ');
-			var connectionsHeaderElem = document.querySelector(SELECTOR);
+	var numConnections = connectionsInfo['numConnections'];
+	var start = 0;
+	var end = CHUNK_SIZE;
+	
+	var connections = [];
 
-			if (!connectionsHeaderElem) {
-				return 0;
-			}
-			return connectionsHeaderElem.innerText.split(' ')[2];
-		})
+	async.whilst(
+		// Continue looping as long as start is less than numConnections.
+		() => start < numConnections,
 		
-		// Request connections info from LinkedIn Contacts API.
-		.then(function(numConnections) {
-			const URL_PREFIX = ['https://www.linkedin.com/connected/api/v2',
-				'/contacts?start=0&count='].join('');
-			const URL_SUFFIX = ['&fields=id%2Cname%2CfirstName%2ClastName',
-				'%2Ccompany%2Ctitle%2Clocation%2Ctags%2Cemails%2Csources',
-				'%2CdisplaySources%2CconnectionDate%2CsecureProfileImageUrl',
-				'&sort=CREATED_DESC&_=1479676617428'].join('');
-			var url = [URL_PREFIX, numConnections, URL_SUFFIX].join('');
-
+		// Loop body
+		function(callback) {
 			browser
-				.goto(url)
+				// Invoke LinkedIn Contacts API URL using start and end.
+				.goto(getUrl(start, end))
 				.wait('body > pre')
+
+				// Extract the values field from the API's JSON results.
 				.evaluate(function() {
-					const SELECTOR = 'body > pre';
-					var connJsonStr = document.querySelector(SELECTOR).innerText;
-					var connJson = JSON.parse(connJsonStr);
-					return ('values' in connJson) ? connJson['values'] : {};
+					var bodyPre = document.querySelector('body > pre');
+					var connJson = JSON.parse(bodyPre.innerText);
+					return ('values' in connJson) ? connJson['values'] : [];
 				})
-				.then(function(connectionsInfo) {
-					asyncCallback(null, connectionsInfo, browser);
-				}, errorHandler);
-		}, errorHandler);
+
+				// Add the latest list of connections to the cumulative list.
+				// Update start and end, and continue iterating.
+				.then(function(connectionsList) {
+					connections = connections.concat(connectionsList);
+					
+					start += CHUNK_SIZE+1;
+					end += CHUNK_SIZE;
+					if (end > numConnections) {
+						end = numConnections;
+					}
+
+					// Move onto the next loop iteration.
+					callback(null);
+				});
+		},
+
+		// Once we're done iterating, add cumulative list of results to
+		// connectionsInfo object, and move onto next stage of waterfall.
+		function(err) {
+			if (err) {
+				asyncCallback(null, {error: ERR_MSG}, browser);
+				return;
+			}
+			connectionsInfo['connections'] = connections;
+			asyncCallback(null, connectionsInfo, browser);
+		}
+	);
 };
