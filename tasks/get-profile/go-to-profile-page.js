@@ -16,24 +16,33 @@ var profileUrl = null;
  * step in the async-waterfall.
  */
 module.exports = function(browser, asyncCallback) {
+	var errorHandler = function() {
+		browser
+			.end()
+			.then(function() {
+				var errMsg = 'Unable to navigate to profile page.';
+				asyncCallback(new Error(errMsg));
+			});
+	};
+
 	var navigateToProfile = function(next) {
 		// If this module was not configured with any profileUrl, then
 		// simply navigate to the profile page of the logged-in user.
 		if (!profileUrl) {
 			browser
 				.click('#main-site-nav > ul > li:nth-child(2) > a')
-				.then(() => next());
+				.then(() => next(), errorHandler);
 		}
 		// Otherwise, navigate to the specified profileUrl.
 		else {
 			browser
 				.goto(profileUrl)
-				.then(() => next());
+				.then(() => next(), errorHandler);
 		}
 	};
 
 	browser
-		// Wait for user to sign in and home page to finish loading.
+		// Wait for user to sign in and for home page to finish loading.
 		.wait(DELAY_MS)
 
 		// Move to either current user's profile or specified profile url.
@@ -42,14 +51,7 @@ module.exports = function(browser, asyncCallback) {
 		.then(() => navigateToProfile(function() {
 			browser
 				.wait(DELAY_MS)
-				.then(() => asyncCallback(null, browser), function() {
-					browser
-						.end()
-						.then(function() {
-							var errMsg = 'Unable to navigate to profile page.';
-							asyncCallback(new Error(errMsg));
-						});
-				});
+				.then(() => asyncCallback(null, browser), errorHandler);
 		}));
 };
 
