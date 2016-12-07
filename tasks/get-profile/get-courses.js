@@ -4,10 +4,12 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 			var courses = [];
 
 			document
-				.querySelectorAll('#courses-view > div > ul > li > span')
+				.querySelectorAll('#courses-view > div > ul > li')
 				.forEach(function(courseNode) {
-					courses.push(courseNode.innerText);
-				});
+					var courseDetails = courseNode.innerText.replace(
+						'Click to edit course', '').trim();
+					courses.push(courseDetails);
+				}); 
 			
 			return courses;
 		})
