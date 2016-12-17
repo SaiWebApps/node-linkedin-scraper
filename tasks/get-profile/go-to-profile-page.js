@@ -30,7 +30,7 @@ module.exports = function(browser, asyncCallback) {
 		// simply navigate to the profile page of the logged-in user.
 		if (!profileUrl) {
 			browser
-				.click('#main-site-nav > ul > li:nth-child(2) > a')
+				.click('#header-navigation-main > ul > li:nth-child(2) > a')
 				.then(() => next(), errorHandler);
 		}
 		// Otherwise, navigate to the specified profileUrl.
