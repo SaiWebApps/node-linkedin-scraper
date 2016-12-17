@@ -9,24 +9,38 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 
 			skillsNodes.forEach(function(skillsNode) {
 				// Utility functions
-				var get = (selector) => skillsNode.querySelector(selector);
-				var getText = function(selector) {
-					var targetNode = get(selector);
-					if (targetNode === null || targetNode === undefined) {
+				var getText = function(selector, altSelector) {
+					var target = skillsNode.querySelector(selector);
+					var altTarget = skillsNode.querySelector(altSelector);
+					
+					if (!target && !altTarget) {
 						return null;
 					}
-					return targetNode.innerHTML;
+					return (target || altTarget).innerText;
+				};
+				var toInt = function(str) {
+					if (!str) {
+						return 0;
+					}
+					return parseInt(str);
 				};
 
 				// Extract information about this skill, save to JSON object,
 				// and add that object to output.
-				const NAME_SELECTOR = 'span > span.endorse-item-name > span';
-				const ENDORSEMENT_COUNT_SELECTOR = 'span > span.endorse-count > span';
-				var prefix = get('li > ' + NAME_SELECTOR) ? 'li > ': 'li > div > ';
+				var name = getText('span > span.endorse-item-name > span',
+					'span > span.endorse-item-name > a');
+				var numEndorsements = getText('span > span.endorse-count > span',
+					'span > a.endorse-count > span');
 
+				if (name === null && numEndorsements === null) {
+					return;
+				}
 				output.push({
-					name: getText(NAME_SELECTOR),
-					numEndorsements: getText(ENDORSEMENT_COUNT_SELECTOR)
+					name: getText('span > span.endorse-item-name > span',
+						'span > span.endorse-item-name > a'),
+					numEndorsements: toInt(getText(
+						'span > span.endorse-count > span',
+						'span > a.endorse-count > span'))
 				});
 			});
 
