@@ -1,4 +1,9 @@
 const DELAY_MS = 7200;
+const PROFILE_LINK_SELECTOR_1 = 
+	'#main-site-nav > ul > li:nth-child(2) > a';
+const PROFILE_LINK_SELECTOR_2 = 
+	'#header-navigation-main > ul > li:nth-child(2) > a';
+
 var profileUrl = null;
 
 /**
@@ -30,8 +35,18 @@ module.exports = function(browser, asyncCallback) {
 		// simply navigate to the profile page of the logged-in user.
 		if (!profileUrl) {
 			browser
-				.click('#header-navigation-main > ul > li:nth-child(2) > a')
-				.then(() => next(), errorHandler);
+				.exists(PROFILE_LINK_SELECTOR_1)
+				.then(function(selectorExists) {
+					if (selectorExists) {
+						return PROFILE_LINK_SELECTOR_1;
+					}
+					return PROFILE_LINK_SELECTOR_2;
+				}, errorHandler)
+				.then(function(profileLinkSelector) {
+					browser
+						.click(profileLinkSelector)
+						.then(() => next(), errorHandler);
+				}, errorHandler);
 		}
 		// Otherwise, navigate to the specified profileUrl.
 		else {

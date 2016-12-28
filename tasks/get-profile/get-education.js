@@ -28,20 +28,26 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 				}
 				var getAll = (selector) => 
 					educationNode.querySelectorAll(selector);
+				var clean = function(str) {
+					if (!str) {
+						return str;
+					}
+					return str.trim().replace(/(^[\W])|(,$)/g, '').trim();
+				}
 
 				// Extract basic details about this education entry.
 				var educationInfo = {
 					title: getText('div > header > h4 > div > span'),
-					degree: getText('div > header > h5 > span >' +
-						' span.degree'),
-					major: getText('div > header > h5 > span >' +
-						' span.major'),
+					degree: clean(getText('div > header > h5 > span >' +
+						' span.degree')),
+					major: clean(getText('div > header > h5 > span >' +
+						' span.major')),
 					grade: getText('div > header > h5 > span >' +
 						' span:nth-child(3)'),
 					startTime: getText('div > div.date-header-field.' +
 						'field > span > time:nth-child(1)'),
-					endTime: getText('div > div.date-header-field.' +
-						'field > span > time:nth-child(2)'),
+					endTime: clean(getText('div > div.date-header-field.' +
+						'field > span > time:nth-child(2)')),
 					description: getText('div > p > span'),
 					imgUrl: getImgSrc('div > div > h5 > span > strong > img')
 				};
@@ -55,12 +61,25 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 							projectNode.innerHTML);
 					});
 
+				const PREFIX = 'div > dl > dd:nth-child(';
+				const SUFFIX = ') > ul > li > h6';
+
+				var courseNodes = getAll(PREFIX + 6 + SUFFIX);
+				var awardNodes = getAll(PREFIX + 4 + SUFFIX);
+				if (courseNodes.length === 0) {
+					courseNodes = getAll(PREFIX + 4 + SUFFIX);
+					awardNodes = [];
+				}
+				
 				educationInfo.associatedCourses = [];
-				getAll('div > dl > dd:nth-child(4) > ul > li > h6')
-					.forEach(function(courseNode) {
-						educationInfo.associatedCourses.push(
-							courseNode.innerHTML);
-					});
+				courseNodes.forEach(function(courseNode) {
+					educationInfo.associatedCourses.push(courseNode.innerHTML);
+				});
+
+				educationInfo.associatedAwards = [];
+				awardNodes.forEach(function(awardNode) {
+					educationInfo.associatedAwards.push(awardNode.innerHTML);
+				});
 
 				// Add JSON object with current education entry's 
 				// details to output.
