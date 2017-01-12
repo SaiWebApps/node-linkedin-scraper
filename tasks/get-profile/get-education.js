@@ -111,12 +111,16 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 
 				educationInfo.associatedCourses = [];
 				courseNodes.forEach(function(courseNode) {
-					educationInfo.associatedCourses.push(courseNode.innerText);
+					var course = courseNode.innerText;
+					course = course.replace('View', '').trim();
+					educationInfo.associatedCourses.push(course);
 				});
 
 				educationInfo.associatedAwards = [];
 				awardNodes.forEach(function(awardNode) {
-					educationInfo.associatedAwards.push(awardNode.innerText);
+					var award = awardNode.innerText;
+					award = award.replace('View', '').trim();
+					educationInfo.associatedAwards.push(award);
 				});
 
 				// Add JSON object with current education entry's 
