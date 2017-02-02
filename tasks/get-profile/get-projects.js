@@ -66,9 +66,9 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 					title: getText(projectNode, 
 						'div > header > h4 > div > span',
 						'div > hgroup > h4 > span'),
-					description: getText(projectNode,
-						'div > p.description', 
-						'div > p > span'),
+					description: getText(projectNode, 
+						'div > p > span',
+						'div > p.description'),
 					timePeriod: getText(projectNode, 
 						'div > div > span',
 						'div > p')
