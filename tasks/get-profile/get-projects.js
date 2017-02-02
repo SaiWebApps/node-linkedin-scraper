@@ -3,47 +3,94 @@ module.exports = function(profileInfo, browser, asyncCallback) {
 		.evaluate(function() {
 			var output = [];
 
+			// Utility functions
+			var get = function() {
+				var querySelector = (sel) => document.querySelector(sel);
+				var startIdx = 0;
+				if (typeof(arguments[0]) === 'object') {
+					querySelector = (sel) => arguments[0].querySelector(sel);
+					startIdx = 1;
+				}
+
+				for (var i = startIdx; i < arguments.length; i++) {
+					var query = arguments[i];
+					var targetNode = querySelector(query);
+					if (targetNode) {
+						return targetNode;
+					}
+				}
+				return null;
+			};
+			var getText = function() {
+				var targetNode = get.apply(this, arguments);
+				return (targetNode) ? targetNode.innerText : null;
+			};
+			var getImgSrc = function() {
+				var targetNode = get.apply(this, arguments);
+				return (targetNode) ? targetNode.src : null;
+			};
+			var getHRef = function() {
+				var targetNode = get.apply(this, arguments);
+				return (targetNode) ? targetNode.href : null;
+			};
+			var getAll = function() {
+				var querySelectorAll = (sel) => document.querySelectorAll(sel);
+				var startIdx = 0;
+				if (typeof(arguments[0]) === 'object') {
+					querySelectorAll = (sel) => arguments[0].querySelectorAll(sel);
+					startIdx = 1;
+				}
+
+				for (var i = startIdx; i < arguments.length; i++) {
+					var query = arguments[i];
+					var targetNode = querySelectorAll(query);
+					if (targetNode && targetNode.length > 0) {
+						return targetNode;
+					}
+				}
+				return [];
+			};
+
 			// Add each project node's information as a JSON object to output.
-			var projectNodes = document.querySelectorAll(
-				'#background-projects > div.entity-container > div.entity' +
-				' > div.edit-action-area');
+			var projectNodes = getAll(
+				[
+					'#background-projects > div.entity-container',
+					'> div.entity > div.edit-action-area'
+				].join(' '),
+				'#background-projects > div > div'
+			);
 
 			projectNodes.forEach(function(projectNode) {
-				// Utility functions
-				var get = (selector) => projectNode.querySelector(selector);
-				var getText = function(selector) {
-					var targetNode = get(selector);
-					if (!targetNode) {
-						return null;
-					}
-					return targetNode.innerText;
-				};
-				var getHRef = function(selector) {
-					var targetNode = get(selector);
-					if (!targetNode) {
-						return null;
-					}
-					return targetNode.href;
-				}
-				var getAll = (selector) => 
-					projectNode.querySelectorAll(selector);
-
 				// Extract basic details about this project entry.
 				var projectInfo = {
-					title: getText('div > header > h4 > div > span'),
-					description: getText('div > p'),
-					timePeriod: getText('div > div > span')
+					title: getText(projectNode, 
+						'div > header > h4 > div > span',
+						'div > hgroup > h4 > span'),
+					description: getText(projectNode,
+						'div > p.description', 
+						'div > p > span'),
+					timePeriod: getText(projectNode, 
+						'div > div > span',
+						'div > p')
 				};
 
 				// Extract team members who worked on this project.
 				projectInfo.teamMembers = [];
-				getAll('div > dl > dd > ul > li').forEach(function(node) {
+				var teamMembersNodes = getAll(projectNode, 
+					'div > dl > dd > ul > li');
+				teamMembersNodes.forEach(function(teamMemberNode) {
 					projectInfo.teamMembers.push({
-						name: getText('div > dl > dd > ul > li' +
-							' > h5 > span > strong > a'),
-						profileLink: getHRef('div > dl > dd > ul > li' +
-							' > h5 > span > strong > a'),
-						headline: getText('div > dl > dd > ul > li > h6')
+						name: getText(teamMemberNode, 
+							'div > dl > dd > ul > li > h5 > span > strong > a',
+							'div > dl > dd > ul > li > h5',
+							'div > dl > dd > ul > li > hgroup > h5 > span > strong > a',
+							'div > dl > dd > ul > li > hgroup > h5'),
+						profileLink: getHRef(teamMemberNode,
+							'div > dl > dd > ul > li > h5 > span > strong > a',
+							'div > dl > dd > ul > li > hgroup > h5 > span > strong > a'),
+						headline: getText(teamMemberNode,
+							'div > dl > dd > ul > li > h6',
+							'div > dl > dd > ul > li > hgroup > h6')
 					});
 				});
 
