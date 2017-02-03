@@ -12,12 +12,9 @@ function TaskListManager(profileUrl)
 
 TaskListManager.prototype.configureTasks = function(taskList) {
 	var profileUrl = this.profileUrl;
-	if (!profileUrl) {
-		return taskList;
-	}
 
 	return taskList.map(function(task) {
-		if ('setProfileUrl' in task){
+		if ('setProfileUrl' in task) {
 			task.setProfileUrl(profileUrl);
 		}
 		return task;
